@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">gihao6 Folia Player</string>
+    <string name="title_activity_main">gihao6 Folia Player</string>
+    <string name="package_name">com.gihao6.folia</string>
+    <string name="custom_url_scheme">com.gihao6.folia</string>
+</resources>

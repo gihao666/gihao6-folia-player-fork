@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
+  <meta name="theme-color" content="#04090e">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="gihao6 Folia Player — 一个以全屏沉浸式歌词为核心的音乐播放器，WebGL GPU 渲染，适配桌面与移动端横竖屏。">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="gihao6 Folia">
+  <title>gihao6 Folia Player · 歌词再想象</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23070b12'/%3E%3Cpath d='M20 46V18h24v7H28v5h12v7H28v9z' fill='%237fe7ff'/%3E%3C/svg%3E">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="4.5" width="4" height="15" rx="1.2" fill="currentColor" stroke="none"/><rect x="14" y="4.5" width="4" height="15" rx="1.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-prev" viewBox="0 0 24 24"><path d="M19 20 9 12l10-8z" fill="currentColor" stroke="none"/><path d="M5 19V5"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="m5 20 10-8L5 4z" fill="currentColor" stroke="none"/><path d="M19 19V5"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></symbol>
+  <symbol id="i-repeat-one" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/><path d="M11 10h1v4"/></symbol>
+  <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m16 9 5 6"/><path d="m21 9-5 6"/></symbol>
+  <symbol id="i-queue" viewBox="0 0 24 24"><path d="M4 6h11"/><path d="M4 12h11"/><path d="M4 18h7"/><path d="M17 15v5"/><path d="M17 15h4"/><path d="M21 6v11a3 3 0 0 1-6 0"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18h1.5a2.5 2.5 0 0 0 0-5H13a2 2 0 0 1 0-4h3.5A4.5 4.5 0 0 0 21 7.5C21 4.9 17 3 12 3Z"/><circle cx="7.5" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="10" cy="6.5" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="6.5" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-import" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 5.6a5.5 5.5 0 0 0-7.8 0L12 6.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 22l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="m19 16 .9 2.1L22 19l-2.1.9L19 22l-.9-2.1L16 19l2.1-.9z"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 19v3"/></symbol>
+  <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="2" y="14" width="5" height="7" rx="2"/><rect x="17" y="14" width="5" height="7" rx="2"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H7a5 5 0 0 1-.8-9.9A6.5 6.5 0 0 1 18.7 8a5.5 5.5 0 0 1-1.2 11Z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2A5 5 0 0 0 12 20.1l1.1-1.1"/></symbol>
+  <symbol id="i-server" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01"/><path d="M7 16.5h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7"/></symbol>
+</svg>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="backdrop" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="light-leak leak-a" aria-hidden="true"></div>
+<div class="light-leak leak-b" aria-hidden="true"></div>
+
+<div class="app" id="app">
+
+  <header class="topbar" id="topbar">
+    <a class="brand" href="#" aria-label="gihao6 Folia Player 首页" id="brandLink">
+      <span class="brand-mark">G6</span>
+      <span class="brand-text"><strong>GIHAO6</strong><em>FOLIA PLAYER</em></span>
+    </a>
+    <div class="top-actions">
+      <button class="pill gpu-pill" id="gpuPill" type="button" aria-label="GPU 渲染状态">
+        <span class="gpu-dot" aria-hidden="true"></span>
+        <span id="gpuLabel">WebGL</span>
+      </button>
+      <button class="icon-btn install-btn" id="installBtn" type="button" aria-label="安装到桌面" title="安装到桌面" hidden>
+        <svg><use href="#i-import"/></svg>
+      </button>
+      <button class="icon-btn" id="styleBtn" type="button" aria-label="切换歌词样式" title="歌词样式 (V)">
+        <svg><use href="#i-sparkle"/></svg>
+      </button>
+      <button class="icon-btn" id="sourceBtn" type="button" aria-label="打开音乐源" title="音乐源 (S)">
+        <svg><use href="#i-cloud"/></svg>
+      </button>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="切换主题配色" title="切换主题 (T)">
+        <svg><use href="#i-palette"/></svg>
+      </button>
+      <button class="icon-btn" id="queueBtn" type="button" aria-label="打开播放队列" title="播放队列 (Q)" aria-expanded="false">
+        <svg><use href="#i-queue"/></svg>
+      </button>
+      <button class="icon-btn" id="fullBtn" type="button" aria-label="进入全屏" title="全屏 (F)">
+        <svg><use href="#i-expand"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+    <section class="record" aria-label="正在播放">
+      <div class="cover-shell" id="coverShell">
+        <div class="cover-halo" aria-hidden="true"></div>
+        <div class="cover-frame" id="coverFrame">
+          <img id="cover" alt="《潮汐备忘录》专辑封面" draggable="false">
+          <span class="cover-glare" aria-hidden="true"></span>
+          <span class="cover-index" id="coverIndex">01</span>
+        </div>
+        <div class="cover-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
+      </div>
+      <div class="track" id="trackInfo">
+        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span><span id="trackAlbum">海岸线以北 · 2026</span></p>
+        <h1 class="track-title" id="trackTitle">潮汐备忘录</h1>
+        <p class="track-en" id="trackSub">Tidal Memo</p>
+        <p class="track-artist" id="trackArtist">Folia Session</p>
+        <div class="track-chips" id="trackChips">
+          <span class="chip">84 BPM</span>
+          <span class="chip">D 大调</span>
+          <span class="chip">氛围流行</span>
+        </div>
+        <div class="track-actions">
+          <button class="soft-btn" id="likeBtn" type="button" aria-pressed="false" aria-label="收藏当前曲目">
+            <svg><use href="#i-heart"/></svg><span>收藏</span>
+          </button>
+          <button class="soft-btn" id="importBtn" type="button" aria-label="导入本地音频">
+            <svg><use href="#i-import"/></svg><span>导入本地音频</span>
+          </button>
+          <input type="file" id="fileInput" accept="audio/*" multiple hidden>
+        </div>
+      </div>
+    </section>
+
+    <section class="lyrics-wrap" id="lyricsWrap" aria-label="歌词">
+      <div class="lyrics-head">
+        <span class="lyrics-kicker"><svg aria-hidden="true"><use href="#i-mic"/></svg>歌词</span>
+        <span class="lyrics-status" id="lyricsStatus">离线合成 · 逐字点亮</span>
+      </div>
+      <div class="lyrics-viewport" id="lyricsViewport" tabindex="0" role="group" aria-label="歌词列表，点击任意一行跳转">
+        <div class="lyrics-rail" id="lyricsRail"></div>
+        <div class="lyrics-empty" id="lyricsEmpty" hidden>
+          <svg aria-hidden="true"><use href="#i-headphones"/></svg>
+          <strong>本地音轨 · 暂无歌词</strong>
+          <span>让声音自己说话</span>
+        </div>
+        <div class="lyrics-fade top" aria-hidden="true"></div>
+        <div class="lyrics-fade bottom" aria-hidden="true"></div>
+      </div>
+      <div class="lyrics-foot">
+        <span id="lyricHint">点击歌词可跳转 · 滚动查看全篇</span>
+        <span class="sync-dot" id="syncDot"><i aria-hidden="true"></i>LIVE</span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="dock-wrap" id="dockWrap">
+    <div class="dock" id="dock">
+      <div class="dock-progress">
+        <span class="time" id="timeNow">0:00</span>
+        <div class="progress" id="progress" role="slider" tabindex="0" aria-label="播放进度" aria-valuemin="0" aria-valuemax="1000" aria-valuenow="0" aria-valuetext="0:00">
+          <div class="progress-track">
+            <div class="progress-buffer" id="progressBuffer"></div>
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="progress-knob" id="progressKnob"></div>
+          <input type="range" id="seek" min="0" max="1000" value="0" step="1" aria-label="拖动跳转播放进度">
+        </div>
+        <span class="time" id="timeTotal">0:00</span>
+      </div>
+      <div class="dock-main">
+        <div class="dock-left">
+          <span class="mini-cover"><img id="miniCover" alt="" draggable="false"></span>
+          <div class="mini-meta">
+            <strong id="miniTitle">潮汐备忘录</strong>
+            <span id="miniArtist">Folia Session</span>
+          </div>
+        </div>
+        <div class="transport">
+          <button class="icon-btn ghost" id="prevBtn" type="button" aria-label="上一首" title="上一首 (Shift + ←)">
+            <svg><use href="#i-prev"/></svg>
+          </button>
+          <button class="play-btn" id="playBtn" type="button" aria-label="播放" title="播放 / 暂停 (空格)">
+            <svg class="icon-play"><use href="#i-play"/></svg>
+            <svg class="icon-pause"><use href="#i-pause"/></svg>
+            <span class="play-ring" aria-hidden="true"></span>
+          </button>
+          <button class="icon-btn ghost" id="nextBtn" type="button" aria-label="下一首" title="下一首 (Shift + →)">
+            <svg><use href="#i-next"/></svg>
+          </button>
+        </div>
+        <div class="dock-right">
+          <button class="icon-btn ghost" id="shuffleBtn" type="button" aria-label="随机播放" aria-pressed="false" title="随机播放">
+            <svg><use href="#i-shuffle"/></svg>
+          </button>
+          <button class="icon-btn ghost is-on" id="loopBtn" type="button" aria-label="循环模式：列表循环" title="循环模式">
+            <svg><use href="#i-repeat"/></svg>
+          </button>
+          <div class="volume" id="volumeBox">
+            <button class="icon-btn ghost" id="muteBtn" type="button" aria-label="静音" title="静音 (M)">
+              <svg class="icon-vol"><use href="#i-volume"/></svg>
+              <svg class="icon-mut"><use href="#i-mute"/></svg>
+            </button>
+            <input type="range" id="volume" min="0" max="100" value="85" aria-label="音量">
+          </div>
+          <button class="icon-btn ghost mobile-only" id="queueBtnMobile" type="button" aria-label="播放队列">
+            <svg><use href="#i-queue"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <aside class="queue-sheet" id="queueSheet" aria-hidden="true" aria-label="播放队列">
+    <div class="queue-panel" role="dialog" aria-modal="true" aria-labelledby="queueTitle">
+      <div class="queue-head">
+        <div>
+          <p class="eyebrow">UP NEXT</p>
+          <h2 id="queueTitle">播放队列</h2>
+        </div>
+        <button class="icon-btn" id="queueClose" type="button" aria-label="关闭播放队列">
+          <svg><use href="#i-close"/></svg>
+        </button>
+      </div>
+      <div class="queue-now" id="queueNow"></div>
+      <ol class="queue-list" id="queueList"></ol>
+      <div class="queue-foot">
+        <button class="soft-btn" id="queueImport" type="button">
+          <svg><use href="#i-import"/></svg><span>导入本地音频</span>
+        </button>
+        <span class="queue-hint">本地文件仅在本次会话中播放</span>
+      </div>
+    </div>
+    <div class="queue-scrim" id="queueScrim"></div>
+  </aside>
+
+
+  <aside class="source-sheet" id="sourceSheet" aria-hidden="true" aria-label="音乐源">
+    <div class="source-panel" role="dialog" aria-modal="true" aria-labelledby="sourceTitle">
+      <div class="queue-head">
+        <div>
+          <p class="eyebrow">SOURCES</p>
+          <h2 id="sourceTitle">音乐源</h2>
+        </div>
+        <button class="icon-btn" id="sourceClose" type="button" aria-label="关闭音乐源">
+          <svg><use href="#i-close"/></svg>
+        </button>
+      </div>
+      <div class="source-scroll">
+
+        <section class="source-card">
+          <div class="source-icon"><svg><use href="#i-import"/></svg></div>
+          <div class="source-body">
+            <div class="source-title"><strong>本地文件</strong><span class="badge on">已启用</span></div>
+            <p>导入自己的音频，在本次会话中播放，不经过任何服务器。</p>
+            <button class="soft-btn" id="sourceLocalBtn" type="button">
+              <svg><use href="#i-import"/></svg><span>导入音频</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="source-card">
+          <div class="source-icon"><svg><use href="#i-link"/></svg></div>
+          <div class="source-body">
+            <div class="source-title"><strong>在线直链</strong><span class="badge on">可用</span></div>
+            <p>粘贴你有权访问的音频地址，需要服务器允许跨域（CORS）。</p>
+            <div class="source-form">
+              <input id="urlInput" type="url" placeholder="https://example.com/track.mp3" autocomplete="off">
+              <button class="soft-btn primary" id="urlPlayBtn" type="button">播放直链</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="source-card">
+          <div class="source-icon"><svg><use href="#i-server"/></svg></div>
+          <div class="source-body">
+            <div class="source-title"><strong>Navidrome / Subsonic</strong><span class="badge" id="subStatus">未连接</span></div>
+            <p>连接你自己的音乐服务器，把整个曲库变成可在线播放的源。</p>
+            <div class="source-form grid">
+              <input id="subServer" type="url" placeholder="https://music.example.com" autocomplete="off">
+              <input id="subUser" type="text" placeholder="用户名" autocomplete="username">
+              <input id="subPass" type="password" placeholder="密码（仅本次会话保存）" autocomplete="current-password">
+              <button class="soft-btn primary" id="subConnect" type="button">连接并同步</button>
+            </div>
+            <p class="source-hint" id="subHint">服务器需允许跨域。建议使用 HTTPS，密码只保存在当前标签页。</p>
+          </div>
+        </section>
+
+        <section class="source-card">
+          <div class="source-icon"><svg><use href="#i-cloud"/></svg></div>
+          <div class="source-body">
+            <div class="source-title"><strong>在线音乐平台</strong><span class="badge warn" id="onlineBadge">需自建 API</span></div>
+            <p>连接你自建的兼容 API（网易云 NeteaseCloudMusicApi / QQ qq-music-api），支持扫码登录、搜索与在线播放。请自行部署并遵守平台条款。</p>
+            <div class="provider-tabs" id="providerTabs">
+              <button class="provider-tab is-active" type="button" data-provider="netease">网易云音乐</button>
+              <button class="provider-tab" type="button" data-provider="qq">QQ音乐</button>
+            </div>
+            <div class="source-form">
+              <input id="onlineBase" type="url" placeholder="API 地址，例如 http://localhost:3000" autocomplete="off">
+              <button class="soft-btn" id="onlineSave" type="button">保存地址</button>
+            </div>
+            <div class="online-login" id="onlineLoginBox">
+              <button class="soft-btn primary" id="onlineLogin" type="button">扫码登录</button>
+              <button class="soft-btn" id="onlineLogout" type="button" disabled>退出登录</button>
+              <span class="source-hint" id="onlineStatus">未登录</span>
+            </div>
+            <div class="qr-box" id="qrBox" hidden>
+              <img id="qrImage" alt="登录二维码">
+              <div class="qr-meta">
+                <strong>请使用 App 扫码</strong>
+                <span id="qrStatus">等待扫码…</span>
+              </div>
+            </div>
+            <div class="online-search" id="onlineSearchBox" hidden>
+              <div class="source-form">
+                <input id="onlineSearch" type="search" placeholder="搜索歌曲、歌手" autocomplete="off">
+                <button class="soft-btn primary" id="onlineSearchBtn" type="button">搜索</button>
+              </div>
+              <div class="online-results" id="onlineResults"></div>
+            </div>
+            <p class="source-hint" id="onlineHint">扫码登录需要 API 允许跨域凭据（CORS credentials）。汽水音乐需要桌面桥接，纯网页无法完成授权。</p>
+          </div>
+        </section>
+
+      </div>
+    </div>
+    <div class="queue-scrim" id="sourceScrim"></div>
+  </aside>
+
+
+  <aside class="style-sheet" id="styleSheet" aria-hidden="true" aria-label="歌词样式">
+    <div class="style-panel" role="dialog" aria-modal="true" aria-labelledby="styleTitle">
+      <div class="queue-head">
+        <div>
+          <p class="eyebrow">LYRIC STYLES</p>
+          <h2 id="styleTitle">歌词样式</h2>
+        </div>
+        <button class="icon-btn" id="styleClose" type="button" aria-label="关闭歌词样式">
+          <svg><use href="#i-close"/></svg>
+        </button>
+      </div>
+      <div class="style-grid" id="styleGrid"></div>
+      <p class="source-hint" style="margin-top:14px">16 种样式 · 快捷键 V 切换下一种，Shift + V 上一种。所有样式均可切换主题配色。</p>
+    </div>
+    <div class="queue-scrim" id="styleScrim"></div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="boot" id="boot">
+    <div class="boot-inner">
+      <div class="boot-mark">F</div>
+      <p class="boot-kicker">GIHAO6 · FOLIA PLAYER · 2026</p>
+      <h2>让歌词<br>成为画面本身</h2>
+      <p class="boot-copy">三首离线合成曲目 · WebGL GPU 渲染 · 全屏沉浸歌词</p>
+      <button class="boot-btn" id="bootBtn" type="button">
+        <span>进入播放器</span>
+        <svg><use href="#i-chevron"/></svg>
+      </button>
+      <p class="boot-note"><svg aria-hidden="true"><use href="#i-headphones"/></svg>建议佩戴耳机 · 首次进入需合成约 1 分钟音频</p>
+      <p class="boot-status" id="bootStatus">正在准备音频与 GPU 画面…</p>
+    </div>
+  </div>
+
+  <div class="buffer-overlay" id="bufferOverlay" hidden>
+    <div class="buffer-card">
+      <div class="equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <strong id="bufferTitle">正在合成《潮汐备忘录》</strong>
+      <span id="bufferCopy">离线渲染音频与频谱，请稍候</span>
+      <div class="buffer-bar"><i></i></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/data.js" defer></script>
+<script src="js/sources.js" defer></script>
+<script src="js/online.js" defer></script>
+<script src="js/audio.js" defer></script>
+<script src="js/visualizer.js" defer></script>
+<script src="js/app.js" defer></script>
+</body>
+</html>

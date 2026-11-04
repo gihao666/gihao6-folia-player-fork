@@ -1,0 +1,21 @@
+{
+  "name": "gihao6-folia-player",
+  "version": "1.0.0",
+  "private": true,
+  "description": "gihao6 Folia Player — immersive lyric music player with WebGL visuals and 16 lyric styles",
+  "license": "MIT",
+  "author": "gihao6",
+  "scripts": {
+    "serve": "python3 -m http.server 8080",
+    "sync:web": "node scripts/sync-web.mjs",
+    "android:add": "npm run sync:web && cap add android",
+    "android:sync": "npm run sync:web && cap sync android",
+    "android:open": "npm run android:sync && cap open android",
+    "android:build": "npm run android:sync && cd android && ./gradlew assembleDebug"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/cli": "^7.0.0",
+    "@capacitor/core": "^7.0.0"
+  }
+}

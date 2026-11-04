@@ -1,0 +1,11 @@
+{
+  "appId": "com.gihao6.folia",
+  "appName": "gihao6 Folia Player",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}
