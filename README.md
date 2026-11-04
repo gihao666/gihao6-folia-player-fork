@@ -1,7 +1,5 @@
 # gihao6_Folia_Player
 
-> **已发布**：华为云开发者作品展览馆 ·「布道活动-广东工商职业技术大学」专区  
-> 作品页：https://gallery.developer.huaweicloud.com/gallery/007b000ca7800000
 
 
 一个以「全屏沉浸式歌词」为核心的音乐播放器。纯前端、零构建、可离线运行，支持 WebGL GPU 可视化、16 种歌词样式、网易云 / QQ 音乐自建 API、Navidrome / Subsonic、本地文件与在线直链。
