@@ -88,21 +88,21 @@
       <div class="cover-shell" id="coverShell">
         <div class="cover-halo" aria-hidden="true"></div>
         <div class="cover-frame" id="coverFrame">
-          <img id="cover" alt="《潮汐备忘录》专辑封面" draggable="false">
+          <img id="cover" alt="等待音乐源" draggable="false">
           <span class="cover-glare" aria-hidden="true"></span>
           <span class="cover-index" id="coverIndex">01</span>
         </div>
         <div class="cover-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
       </div>
       <div class="track" id="trackInfo">
-        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span><span id="trackAlbum">海岸线以北 · 2026</span></p>
-        <h1 class="track-title" id="trackTitle">潮汐备忘录</h1>
-        <p class="track-en" id="trackSub">Tidal Memo</p>
-        <p class="track-artist" id="trackArtist">Folia Session</p>
+        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span><span id="trackAlbum">音乐源 · 本地 / 在线</span></p>
+        <h1 class="track-title" id="trackTitle">未选择曲目</h1>
+        <p class="track-en" id="trackSub">Add a source to begin</p>
+        <p class="track-artist" id="trackArtist">gihao6 Folia Player</p>
         <div class="track-chips" id="trackChips">
-          <span class="chip">84 BPM</span>
-          <span class="chip">D 大调</span>
-          <span class="chip">氛围流行</span>
+          <span class="chip">16 种歌词样式</span>
+          <span class="chip">WebGL 可视化</span>
+          <span class="chip">在线源</span>
         </div>
         <div class="track-actions">
           <button class="soft-btn" id="likeBtn" type="button" aria-pressed="false" aria-label="收藏当前曲目">
@@ -119,14 +119,14 @@
     <section class="lyrics-wrap" id="lyricsWrap" aria-label="歌词">
       <div class="lyrics-head">
         <span class="lyrics-kicker"><svg aria-hidden="true"><use href="#i-mic"/></svg>歌词</span>
-        <span class="lyrics-status" id="lyricsStatus">离线合成 · 逐字点亮</span>
+        <span class="lyrics-status" id="lyricsStatus">等待音乐源</span>
       </div>
       <div class="lyrics-viewport" id="lyricsViewport" tabindex="0" role="group" aria-label="歌词列表，点击任意一行跳转">
         <div class="lyrics-rail" id="lyricsRail"></div>
         <div class="lyrics-empty" id="lyricsEmpty" hidden>
           <svg aria-hidden="true"><use href="#i-headphones"/></svg>
-          <strong>本地音轨 · 暂无歌词</strong>
-          <span>让声音自己说话</span>
+          <strong>还没有播放内容</strong>
+          <span>打开音乐源，扫码登录或导入本地音频</span>
         </div>
         <div class="lyrics-fade top" aria-hidden="true"></div>
         <div class="lyrics-fade bottom" aria-hidden="true"></div>
@@ -156,8 +156,8 @@
         <div class="dock-left">
           <span class="mini-cover"><img id="miniCover" alt="" draggable="false"></span>
           <div class="mini-meta">
-            <strong id="miniTitle">潮汐备忘录</strong>
-            <span id="miniArtist">Folia Session</span>
+            <strong id="miniTitle">未选择曲目</strong>
+            <span id="miniArtist">打开音乐源开始</span>
           </div>
         </div>
         <div class="transport">
@@ -336,7 +336,7 @@
       <div class="boot-mark">F</div>
       <p class="boot-kicker">GIHAO6 · FOLIA PLAYER · 2026</p>
       <h2>让歌词<br>成为画面本身</h2>
-      <p class="boot-copy">三首离线合成曲目 · WebGL GPU 渲染 · 全屏沉浸歌词</p>
+      <p class="boot-copy">网易云 / QQ 音乐 · 自建曲库 · WebGL 沉浸歌词</p>
       <button class="boot-btn" id="bootBtn" type="button">
         <span>进入播放器</span>
         <svg><use href="#i-chevron"/></svg>
@@ -349,8 +349,8 @@
   <div class="buffer-overlay" id="bufferOverlay" hidden>
     <div class="buffer-card">
       <div class="equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-      <strong id="bufferTitle">正在合成《潮汐备忘录》</strong>
-      <span id="bufferCopy">离线渲染音频与频谱，请稍候</span>
+      <strong id="bufferTitle">正在准备音轨</strong>
+      <span id="bufferCopy">正在缓冲音频与频谱，请稍候</span>
       <div class="buffer-bar"><i></i></div>
     </div>
   </div>

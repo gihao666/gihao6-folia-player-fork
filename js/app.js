@@ -243,7 +243,49 @@
     return `${song.bpm} BPM`;
   }
 
+  function renderEmptyState() {
+    const cover = makeCover({ art: { seed: 7, hueA: 196, hueB: 218, hueC: 44, style: 'wave' } });
+    dom.cover.src = cover;
+    dom.cover.alt = '等待音乐源';
+    dom.miniCover.src = cover;
+    dom.coverIndex.textContent = '--';
+    dom.trackTitle.textContent = '未选择曲目';
+    dom.trackSub.textContent = 'Add a source to begin';
+    dom.trackArtist.textContent = 'gihao6 Folia Player';
+    dom.trackAlbum.textContent = '音乐源 · 本地 / 在线';
+    dom.miniTitle.textContent = '未选择曲目';
+    dom.miniArtist.textContent = '打开音乐源开始';
+    dom.trackChips.innerHTML = '';
+    ['16 种歌词样式', 'WebGL 可视化', '在线源'].forEach((text) => {
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.textContent = text;
+      dom.trackChips.appendChild(chip);
+    });
+    dom.likeBtn.setAttribute('aria-pressed', 'false');
+    dom.lyricsStatus.textContent = '等待音乐源';
+    dom.lyricHint.textContent = '打开音乐源，扫码登录或导入本地音频';
+    dom.lyricsRail.innerHTML = '';
+    state.lineEls = [];
+    state.charEls = [];
+    state.lyricData = [];
+    state.activeIndex = -2;
+    dom.lyricsEmpty.hidden = false;
+    const emptyTitle = dom.lyricsEmpty.querySelector('strong');
+    if (emptyTitle) emptyTitle.textContent = '还没有播放内容';
+    const emptySub = dom.lyricsEmpty.querySelector('span');
+    if (emptySub) emptySub.textContent = '打开音乐源，扫码登录或导入本地音频';
+    dom.lyricsRail.style.transform = 'translate3d(0,0,0)';
+    dom.lyricsRail.style.paddingTop = '0px';
+    dom.lyricsRail.style.paddingBottom = '0px';
+    document.title = 'gihao6 Folia Player';
+  }
+
   function updateMeta(song, index) {
+    if (!song) {
+      renderEmptyState();
+      return;
+    }
     const cover = ensureCover(song, index);
     dom.cover.src = cover;
     dom.cover.alt = `《${song.title}》专辑封面`;
@@ -300,6 +342,10 @@
   }
 
   function buildLyrics(song) {
+    if (!song) {
+      renderEmptyState();
+      return;
+    }
     dom.lyricsRail.innerHTML = '';
     state.lineEls = [];
     state.charEls = [];
@@ -473,7 +519,8 @@
   }
 
   function updateTotal() {
-    const total = engine.duration || state.duration || songDuration(currentSong());
+    const song = currentSong();
+    const total = engine.duration || state.duration || (song ? songDuration(song) : 0);
     state.duration = total;
     const text = DATA.formatDuration(total);
     if (text !== state.lastTotalText) {
@@ -619,7 +666,7 @@
       button.type = 'button';
       button.className = 'style-card';
       button.dataset.style = style.id;
-      button.innerHTML = `<span class="s-num">${String(index + 1).padStart(2, '0')}</span><span class="s-name"></span><span class="s-en"></span><span class="s-sample">潮汐</span>`;
+      button.innerHTML = `<span class="s-num">${String(index + 1).padStart(2, '0')}</span><span class="s-name"></span><span class="s-en"></span><span class="s-sample">歌词</span>`;
       button.querySelector('.s-name').textContent = style.name;
       button.querySelector('.s-en').textContent = style.en;
       button.addEventListener('click', () => applyLyricStyle(style.id));
@@ -1210,6 +1257,11 @@
       return;
     }
     if (!engine.buffer) {
+      if (!state.songs.length) {
+        openSources();
+        toast('请添加音乐源或导入本地音频');
+        return;
+      }
       selectSong(state.index, { autoplay: true });
       return;
     }
@@ -1291,7 +1343,10 @@
 
   function toggleLike() {
     const song = currentSong();
-    if (!song) return;
+    if (!song) {
+      toast('请先添加音乐源');
+      return;
+    }
     if (state.liked.has(song.id)) {
       state.liked.delete(song.id);
       toast('已取消收藏');
@@ -1403,8 +1458,10 @@
     }
     dom.boot.classList.add('hidden');
     dom.app.classList.add('ready');
-    if (!engine.buffer) selectSong(state.index, { autoplay: true });
-    else {
+    if (!engine.buffer) {
+      if (state.songs.length) selectSong(state.index, { autoplay: true });
+      else openSources();
+    } else {
       engine.play();
       syncPlayState();
     }
@@ -1764,8 +1821,12 @@
     dom.loopBtn.classList.toggle('is-on', state.loop !== 'off');
     dom.loopBtn.querySelector('use').setAttribute('href', state.loop === 'one' ? '#i-repeat-one' : '#i-repeat');
     dom.loopBtn.setAttribute('aria-label', `循环模式：${state.loop === 'all' ? '列表循环' : state.loop === 'one' ? '单曲循环' : '关闭循环'}`);
-    updateMeta(currentSong(), state.index);
-    buildLyrics(currentSong());
+    if (currentSong()) {
+      updateMeta(currentSong(), state.index);
+      buildLyrics(currentSong());
+    } else {
+      renderEmptyState();
+    }
     renderQueue();
     initSourceForm();
     initStyleGrid();

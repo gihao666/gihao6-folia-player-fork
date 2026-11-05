@@ -2,16 +2,15 @@
 
 
 
-一个以「全屏沉浸式歌词」为核心的音乐播放器。纯前端、零构建、可离线运行，支持 WebGL GPU 可视化、16 种歌词样式、网易云 / QQ 音乐自建 API、Navidrome / Subsonic、本地文件与在线直链。
+一个以「全屏沉浸式歌词」为核心的音乐播放器。纯前端、零构建，**不内置任何曲目**；连接你自己的音乐源、导入本地音频或使用在线直链。支持 WebGL GPU 可视化、16 种歌词样式、网易云 / QQ 音乐自建 API、Navidrome / Subsonic。
+
+**版本：v1.0.1**
 
 > 本仓库是 [chthollyphile/folia-major](https://github.com/chthollyphile/folia-major) 的 fork，整体按 AGPL-3.0 分发；原创代码同时保留 MIT 授权。  
 > 设计思路参考了开源项目 [chthollyphile/folia-major](https://github.com/chthollyphile/folia-major) 的「全屏沉浸歌词」产品理念。**本仓库的全部前端代码、曲目、歌词、封面与视觉素材均为独立原创实现，不包含原项目的代码或素材**（原项目为 AGPL-3.0）。
 
-![桌面预览](screenshots/desktop.jpg)
-
 ## 功能
 
-- **三首原创离线合成曲**：《潮汐备忘录》《霓虹解剖》《纸月亮》，由 Web Audio API 在本地合成，包含和弦、贝斯、琶音、主旋律、鼓组与混响。
 - **16 种歌词样式**：诗、商籁、浮名、诗行、凝彩、倾诉、绘光、回环、花火、莫奈、流光、时计、心象、群唱、云阶、镜台。顶栏 ✦ 或 `V` / `Shift + V` 切换。
 - **逐字歌词**：已唱白、当前字主题色发光、未唱半透明；点击歌词跳转；支持双语翻译。
 - **WebGL GPU 背景**：GLSL 星云、光带与音频频谱，按 GPU 类型自动降级，失败时回退 CSS 渐变。
@@ -112,8 +111,8 @@ styles.css              设计令牌、16 种歌词样式、响应式布局
 manifest.webmanifest    PWA 清单
 sw.js                   Service Worker 离线缓存
 icons/                  安装图标
-js/data.js              曲目、和弦、歌词时间轴、主题
-js/audio.js             离线合成器、播放引擎、FFT
+js/data.js              主题、音乐源与界面数据
+js/audio.js             播放引擎、FFT、可选合成器
 js/visualizer.js        WebGL 背景、程序化封面
 js/sources.js           Subsonic、在线缓冲、LRC 解析
 js/online.js            网易云 / QQ 自建 API 适配
@@ -146,7 +145,6 @@ npm run serve         # 本地静态服务器
 - 在线扫码登录依赖本机或远程 API；手机浏览器中的 `localhost` 指向手机自身，Android 端需在音乐源面板填写可访问的 HTTPS API 地址。
 - 汽水音乐需要桌面桥接 `qishui-music-api`，纯网页无法扫码，因此未纳入网页端。
 - iOS Safari 不支持网页全屏 API；不影响播放。
-- 首次进入需要等待离线合成；曲目较长，低端设备可能需要数秒。
 - 在线源使用 `fetch + decodeAudioData` 缓冲整首音频，需要 API / 音频服务器允许 CORS。
 
 ## 致谢
