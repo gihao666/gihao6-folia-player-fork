@@ -1,6 +1,6 @@
 {
   "name": "gihao6-folia-player",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "description": "gihao6 Folia Player — immersive lyric music player with WebGL visuals and 16 lyric styles",
   "license": "MIT",
