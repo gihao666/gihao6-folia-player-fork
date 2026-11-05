@@ -34,10 +34,11 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - uses: android-actions/setup-android@v3
-
       - name: Install Android SDK packages
-        run: sdkmanager --install "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+        run: |
+          SDKMANAGER="$(find "$ANDROID_HOME" -path '*/bin/sdkmanager' | head -n 1)"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" --install "platforms;android-35" "build-tools;35.0.0" "platform-tools"
 
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
