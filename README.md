@@ -4,7 +4,7 @@
 
 一个以「全屏沉浸式歌词」为核心的音乐播放器。纯前端、零构建，**不内置任何曲目**；连接你自己的音乐源、导入本地音频或使用在线直链。支持 WebGL GPU 可视化、16 种歌词样式、网易云 / QQ 音乐自建 API、Navidrome / Subsonic。
 
-**版本：v1.0.1**
+**版本：v1.0.2**
 
 > 本仓库是 [chthollyphile/folia-major](https://github.com/chthollyphile/folia-major) 的 fork，整体按 AGPL-3.0 分发；原创代码同时保留 MIT 授权。  
 > 设计思路参考了开源项目 [chthollyphile/folia-major](https://github.com/chthollyphile/folia-major) 的「全屏沉浸歌词」产品理念。**本仓库的全部前端代码、曲目、歌词、封面与视觉素材均为独立原创实现，不包含原项目的代码或素材**（原项目为 AGPL-3.0）。
